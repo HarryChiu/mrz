@@ -1,0 +1,59 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Fill test form</title>
+<style>body{font:14px sans-serif;padding:16px;max-width:900px} fieldset{margin-bottom:12px} label{display:block;margin:4px 0} .inline label{display:inline-block;margin-right:12px}</style></head>
+<body>
+<h2>Traveller details (test page)</h2>
+<form id="f1">
+  <fieldset><legend>Plain labels + ids</legend>
+    <label for="fn">First name</label><input id="fn">
+    <label for="ln">Last name</label><input id="ln">
+    <label for="pp">Passport number</label><input id="pp">
+    <label for="dob">Date of birth</label><input id="dob" type="date">
+    <label for="exp">Passport expiry date</label><input id="exp" placeholder="DD/MM/YYYY">
+    <label for="nat">Nationality</label>
+    <select id="nat"><option value="">--</option><option value="FR">France</option><option value="UT">Utopia</option><option value="US">United States of America</option></select>
+    <label for="iss">Passport issuing country</label>
+    <select id="iss"><option value="">--</option><option value="FRA">France</option><option value="UTO">Utopia</option></select>
+    <div class="inline">Gender:
+      <label><input type="radio" name="gender" value="1"> Male</label>
+      <label><input type="radio" name="gender" value="2"> Female</label>
+    </div>
+  </fieldset>
+  <fieldset><legend>Placeholder / name / aria only</legend>
+    <input name="given_name" placeholder="Given name(s)">
+    <input name="family_name" placeholder="Surname">
+    <input name="docNumber" aria-label="Travel document number">
+    <input name="birthDate" placeholder="mm/dd/yyyy">
+    <input name="sex" maxlength="1" placeholder="Sex">
+    <input name="nationality" placeholder="Nationality">
+    <input name="expiryDate" type="date" aria-label="Expiration date">
+    <input name="issueDate" aria-label="Date of issue">
+    <input name="placeOfBirth" placeholder="Place of birth">
+    <input name="username" placeholder="Username">
+    <input name="email" placeholder="Email">
+  </fieldset>
+  <fieldset><legend>Split date selects + wrapping labels</legend>
+    <div>Date of birth:
+      <select name="dob_day"><option>DD</option><option>1</option><option>12</option><option>13</option></select>
+      <select name="dob_month"><option value="">MM</option><option value="7">July</option><option value="8">August</option></select>
+      <input name="dob_year" placeholder="YYYY" maxlength="4">
+    </div>
+    <label>Expiry month <input name="exp_mm" maxlength="2"></label>
+    <label>Expiry year <input name="exp_yy" maxlength="2"></label>
+    <label>Full name <input name="fullName"></label>
+    <label>Gender <select name="title"><option value="">Select</option><option value="m">Male</option><option value="f">Female</option></select></label>
+    <label>Nationality <input name="natCode" maxlength="3" placeholder="Code"></label>
+  </fieldset>
+  <fieldset><legend>Should NOT be filled</legend>
+    <label>Country of birth <input name="cob"></label>
+    <label>Passport date <input type="date" name="passportDate"></label>
+    <label>Mother's name <input name="mother"></label>
+    <label>Password <input type="password" name="pw"></label>
+    <label>Hidden <input name="firstName" style="display:none"></label>
+    <label>Disabled first name <input name="firstName2" disabled></label>
+  </fieldset>
+  <button type="submit">Submit</button>
+</form>
+<iframe src="form-iframe.html" width="600" height="120"></iframe>
+<script>document.getElementById('f1').addEventListener('submit', (e) => { e.preventDefault(); document.title = 'SUBMITTED'; });</script>
+</body></html>

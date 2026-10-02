@@ -1,0 +1,45 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>OCR harness</title>
+<style>body{font:13px monospace;padding:12px} canvas{border:1px solid #ccc;display:block;margin:8px 0} pre{white-space:pre-wrap}</style></head>
+<body>
+<h3>MRZ OCR harness (dev only, uses dist/)</h3>
+<p>Renders an MRZ onto a canvas with a monospace font, then runs the real OCR pipeline.</p>
+<label>Line 1 <input id="l1" size="50" value="P<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<<<<<<<<<"></label><br>
+<label>Line 2 <input id="l2" size="50" value="L898902C36UTO7408122F1204159ZE184226B<<<<<10"></label><br>
+<label>Font <input id="font" value="bold 28px 'OCR B', 'Courier New', monospace"></label>
+<label>Noise <input id="noise" type="number" value="0" step="5"></label>
+<button id="run">Render + OCR</button>
+<label>or image file <input id="file" type="file" accept="image/*"></label>
+<canvas id="c" width="900" height="200"></canvas>
+<div id="status"></div>
+<pre id="out"></pre>
+<script type="module">
+import { recognizeMRZ } from '../dist/lib/ocr.js';
+const $ = (id) => document.getElementById(id);
+function render() {
+  const c = $('c'); const ctx = c.getContext('2d');
+  ctx.fillStyle = '#f3f0e8'; ctx.fillRect(0, 0, c.width, c.height);
+  ctx.fillStyle = '#222'; ctx.font = $('font').value; ctx.textBaseline = 'top';
+  ctx.fillText('PASSPORT   SPECIMEN   NOT VALID', 20, 20);
+  ctx.fillText($('l1').value, 20, 90);
+  ctx.fillText($('l2').value, 20, 140);
+  const n = parseInt($('noise').value, 10) || 0;
+  if (n) {
+    const img = ctx.getImageData(0, 0, c.width, c.height);
+    for (let i = 0; i < img.data.length; i += 4) { const d = (Math.random() - 0.5) * n * 2; img.data[i] += d; img.data[i+1] += d; img.data[i+2] += d; }
+    ctx.putImageData(img, 0, 0);
+  }
+  return new Promise((res) => c.toBlob(res, 'image/png'));
+}
+async function run(blob) {
+  $('out').textContent = ''; const t0 = performance.now();
+  try {
+    const { result, texts } = await recognizeMRZ(blob, { onStatus: (s, p) => { $('status').textContent = `${s} ${p !== undefined ? Math.round(p*100)+'%' : ''}`; } });
+    window.__result = result;
+    $('out').textContent = `${Math.round(performance.now() - t0)} ms\n` + JSON.stringify(result, null, 2) + '\n--- OCR texts ---\n' + texts.join('\n-----\n');
+  } catch (e) { $('out').textContent = 'ERROR ' + (e.stack || e); window.__result = { error: String(e) }; }
+}
+$('run').addEventListener('click', async () => run(await render()));
+$('file').addEventListener('change', (e) => e.target.files[0] && run(e.target.files[0]));
+window.__run = async () => run(await render());
+</script></body></html>

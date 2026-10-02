@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>MRZ Passport Autofill</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <h1>MRZ Passport Autofill</h1>
+    <span id="engine" class="pill">loading OCR…</span>
+  </header>
+
+  <section id="step-paste" class="step">
+    <div id="dropzone" class="dropzone" tabindex="0">
+      <div class="big">Press <kbd>⌘V</kbd> / <kbd>Ctrl+V</kbd> to paste a screenshot</div>
+      <div class="hint">macOS: <kbd>⌃⌘⇧4</kbd> copies a region to the clipboard · Windows: <kbd>Win+Shift+S</kbd></div>
+      <div class="row">
+        <button id="btn-paste" type="button">Paste from clipboard</button>
+        <label class="link">or choose a file<input id="file" type="file" accept="image/*" hidden></label>
+      </div>
+    </div>
+  </section>
+
+  <section id="step-ocr" class="step hidden">
+    <img id="preview" alt="pasted screenshot preview">
+    <div class="progress"><div id="bar"></div></div>
+    <div id="status" class="status">Reading…</div>
+  </section>
+
+  <section id="step-confirm" class="step hidden">
+    <img id="preview2" alt="pasted screenshot preview" class="thumb">
+    <div id="validity" class="validity"></div>
+    <form id="fields" autocomplete="off">
+      <label>First name <input id="f-firstName" name="firstName"></label>
+      <label>Last name <input id="f-lastName" name="lastName"></label>
+      <label>Passport number <input id="f-passportNumber" name="passportNumber"><span class="chk" data-chk="passportNumber"></span></label>
+      <label>Date of birth <input id="f-dob" name="dob" type="date"><span class="chk" data-chk="dob"></span></label>
+      <label>Gender
+        <select id="f-sex" name="sex"><option value="M">Male</option><option value="F">Female</option><option value="X">Unspecified</option></select>
+      </label>
+      <label>Nationality <input id="f-nationality" name="nationality" maxlength="3" class="code"><span id="nat-name" class="muted"></span></label>
+      <label>Issuing country <input id="f-issuingCountry" name="issuingCountry" maxlength="3" class="code"><span id="iss-name" class="muted"></span></label>
+      <label>Expiry date <input id="f-expiry" name="expiry" type="date"><span class="chk" data-chk="expiry"></span></label>
+      <label>Dates in text fields
+        <select id="dateFormat" name="dateFormat">
+          <option value="auto">Auto (detect from field)</option>
+          <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+          <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+          <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+          <option value="DD.MM.YYYY">DD.MM.YYYY</option>
+        </select>
+      </label>
+      <details><summary>Raw MRZ</summary><pre id="raw"></pre></details>
+      <div class="row actions">
+        <button id="btn-fill" type="submit" class="primary">Fill form on this page</button>
+        <button id="btn-reset" type="button">Start over</button>
+      </div>
+    </form>
+    <div id="fill-status" class="status"></div>
+  </section>
+
+  <section id="step-error" class="step hidden">
+    <div id="error" class="error"></div>
+    <details><summary>OCR text</summary><pre id="ocrtext"></pre></details>
+    <div class="row"><button id="btn-retry" type="button">Try another screenshot</button></div>
+  </section>
+
+  <footer>Runs 100% locally. The image and passport data live only in this popup and are discarded when it closes.</footer>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

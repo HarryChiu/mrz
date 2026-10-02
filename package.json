@@ -1,0 +1,14 @@
+{
+  "name": "mrz-autofill-extension",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Chrome MV3 extension: paste a passport screenshot, OCR the MRZ locally, autofill forms.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "tesseract.js": "^7.0.0"
+  }
+}
